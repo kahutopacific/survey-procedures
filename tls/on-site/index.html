@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KPL — On-Site (Survey) Checklist · TLS</title>
+<style>
+  :root {
+    --navy:#1a1a1a; --navy-mid:#2e2e2e; --gold:#F5B731; --gold-light:#fdf0c8;
+    --white:#fff; --grey-bg:#f5f5f5; --grey-line:#e0e0e0; --grey-text:#6b7280;
+    --green:#16a34a; --red:#dc2626; --blue:#2563eb;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--grey-bg); color:var(--navy); font-size:14px; min-height:100vh; }
+  .page-header { background:var(--navy); border-bottom:4px solid var(--gold); padding:10px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; position:sticky; top:0; z-index:200; }
+  .header-brand { display:flex; align-items:center; gap:12px; }
+  .header-logo { background:var(--white); border-radius:8px; padding:5px 10px; display:flex; align-items:center; flex-shrink:0; }
+  .header-logo img { height:36px; width:auto; display:block; }
+  .header-title h1 { font-family:"Arial Narrow","Helvetica Neue",Arial,sans-serif; font-weight:700; font-size:17px; letter-spacing:0.04em; color:var(--white); line-height:1.1; }
+  .header-title p { font-size:10px; color:rgba(255,255,255,0.5); margin-top:2px; }
+  .header-actions { display:flex; gap:7px; flex-shrink:0; }
+  .btn { font-family:system-ui,sans-serif; font-weight:600; font-size:12px; padding:7px 13px; border:none; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s; white-space:nowrap; }
+  .btn-gold { background:var(--gold); color:var(--navy); } .btn-gold:hover { background:#e8a820; }
+  .btn-outline { background:transparent; border:1.5px solid rgba(255,255,255,0.3); color:var(--white); } .btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+  .btn-green { background:var(--green); color:var(--white); } .btn-green:hover { background:#15803d; }
+  .btn-navy { background:var(--navy); color:var(--white); } .btn-navy:hover { background:var(--navy-mid); }
+  .btn-red-sm { background:transparent; border:1.5px solid var(--red); color:var(--red); font-family:system-ui; font-weight:600; font-size:11px; padding:4px 9px; border-radius:5px; cursor:pointer; transition:all 0.15s; } .btn-red-sm:hover { background:var(--red); color:var(--white); }
+  .container { max-width:900px; margin:0 auto; padding:18px 13px 60px; }
+  .doc-id-bar { display:flex; justify-content:space-between; align-items:center; background:var(--navy-mid); color:rgba(255,255,255,0.65); font-size:11px; font-weight:500; letter-spacing:0.05em; padding:7px 13px; border-radius:8px 8px 0 0; }
+  .doc-id-bar .badge { background:var(--gold); color:var(--navy); font-weight:700; padding:2px 7px; border-radius:3px; font-size:10px; margin-right:7px; }
+  .progress-wrap { background:var(--white); border-radius:8px; padding:13px 15px 11px; margin-bottom:13px; box-shadow:0 2px 10px rgba(0,0,0,0.07); }
+  .progress-label { display:flex; justify-content:space-between; font-size:11px; font-weight:600; color:var(--grey-text); margin-bottom:6px; }
+  .progress-bar-bg { height:5px; background:var(--grey-line); border-radius:3px; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--navy),var(--gold)); border-radius:3px; transition:width 0.4s ease; }
+  .form-card { background:var(--white); border-radius:0 0 10px 10px; box-shadow:0 2px 12px rgba(0,0,0,0.08); overflow:hidden; margin-bottom:16px; }
+  .section-header { background:var(--navy); padding:10px 15px; display:flex; align-items:center; gap:9px; cursor:pointer; user-select:none; border-bottom:3px solid var(--gold); }
+  .section-header:hover { background:var(--navy-mid); }
+  .section-num { background:var(--gold); color:var(--navy); font-family:"Arial Narrow",Arial,sans-serif; font-weight:700; font-size:11px; width:21px; height:21px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .section-header h2 { font-family:"Arial Narrow",Arial,sans-serif; font-weight:600; font-size:13px; color:var(--white); letter-spacing:0.08em; text-transform:uppercase; flex:1; }
+  .status-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.2); flex-shrink:0; transition:background 0.3s; }
+  .status-dot.done { background:var(--gold); }
+  .section-toggle { color:rgba(255,255,255,0.45); font-size:13px; transition:transform 0.2s; }
+  .section-toggle.open { transform:rotate(180deg); }
+  .section-body { padding:15px; } .section-body.hidden { display:none; }
+  .field-grid { display:grid; gap:11px; } .field-grid.cols-2 { grid-template-columns:1fr 1fr; } .field-grid.cols-3 { grid-template-columns:1fr 1fr 1fr; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:10px; font-weight:600; color:var(--grey-text); letter-spacing:0.05em; text-transform:uppercase; }
+  .field input, .field select, .field textarea { font-family:system-ui,sans-serif; font-size:14px; padding:8px 11px; border:1.5px solid var(--grey-line); border-radius:6px; color:var(--navy); background:var(--white); transition:border-color 0.15s,box-shadow 0.15s; width:100%; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(245,183,49,0.15); }
+  .field textarea { resize:vertical; min-height:60px; }
+  .divider { height:1px; background:var(--grey-line); margin:13px 0; }
+  .sublabel { font-size:10px; font-weight:600; color:var(--grey-text); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:7px; }
+  .check-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--grey-line); }
+  .check-row:last-of-type { border-bottom:none; }
+  .check-label { font-size:13px; font-weight:500; color:var(--navy); flex:1; line-height:1.35; }
+  .check-label .hint { display:block; font-size:10px; font-weight:400; color:var(--grey-text); margin-top:2px; }
+  .ynna { display:flex; gap:5px; flex-shrink:0; }
+  .ynna-btn { border:1.5px solid var(--grey-line); background:var(--white); border-radius:5px; padding:5px 11px; font-family:system-ui; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s; color:var(--grey-text); }
+  .ynna-btn:hover { border-color:var(--gold); }
+  .ynna-btn.yes.active { background:var(--green); border-color:var(--green); color:var(--white); }
+  .ynna-btn.no.active { background:var(--red); border-color:var(--red); color:var(--white); }
+  .ynna-btn.na.active { background:var(--grey-text); border-color:var(--grey-text); color:var(--white); }
+  .notes-block { margin-top:12px; }
+  .notes-block label { font-size:10px; font-weight:600; color:var(--grey-text); letter-spacing:0.05em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .notes-block textarea { width:100%; font-family:system-ui,sans-serif; font-size:13px; padding:8px 11px; border:1.5px solid var(--grey-line); border-radius:6px; color:var(--navy); background:var(--grey-bg); resize:vertical; min-height:50px; transition:border-color 0.15s,box-shadow 0.15s; }
+  .notes-block textarea:focus { outline:none; border-color:var(--gold); background:var(--white); box-shadow:0 0 0 3px rgba(245,183,49,0.15); }
+  /* repeatable target points */
+  .point-card { border:1.5px solid var(--grey-line); border-radius:8px; padding:12px; margin-bottom:10px; background:var(--grey-bg); }
+  .point-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; }
+  .point-head .pt-title { font-size:12px; font-weight:700; color:var(--navy); letter-spacing:0.04em; }
+  .point-photo { margin-top:9px; }
+  .photo-btn { display:inline-flex; align-items:center; gap:6px; background:var(--white); border:1.5px dashed var(--grey-line); border-radius:7px; padding:9px 13px; font-size:12px; font-weight:600; color:var(--grey-text); cursor:pointer; transition:all 0.15s; }
+  .photo-btn:hover { border-color:var(--gold); color:var(--navy); }
+  .thumb { margin-top:8px; position:relative; display:inline-block; }
+  .thumb img { max-width:140px; max-height:110px; border-radius:7px; border:1.5px solid var(--grey-line); display:block; }
+  .thumb .rm { position:absolute; top:-7px; right:-7px; background:var(--red); color:#fff; border:none; border-radius:50%; width:22px; height:22px; font-size:13px; cursor:pointer; line-height:1; }
+  .add-btn { width:100%; padding:11px; border:1.5px dashed var(--gold); background:var(--gold-light); color:#7a5a00; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+  .add-btn:hover { background:#fce9b8; }
+  .sig-wrap { border:2px solid var(--grey-line); border-radius:8px; overflow:hidden; background:var(--white); position:relative; transition:border-color 0.15s; }
+  .sig-wrap.active { border-color:var(--gold); box-shadow:0 0 0 3px rgba(245,183,49,0.15); }
+  .sig-hint { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; user-select:none; text-align:center; color:rgba(107,114,128,0.4); font-size:12px; display:flex; flex-direction:column; align-items:center; gap:4px; transition:opacity 0.2s; }
+  .sig-canvas { display:block; width:100%; height:120px; touch-action:none; cursor:crosshair; }
+  .sig-bar { display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:var(--grey-bg); border-top:1px solid var(--grey-line); gap:8px; }
+  .sig-bar-label { font-size:10px; font-weight:600; color:var(--grey-text); text-transform:uppercase; letter-spacing:0.04em; }
+  .sig-status { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:3px 8px; border-radius:20px; }
+  .sig-status.empty { background:#fee2e2; color:var(--red); } .sig-status.signed { background:#dcfce7; color:var(--green); }
+  .submit-panel { background:var(--navy); border-radius:10px; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .submit-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.52); z-index:9000; align-items:center; justify-content:center; padding:14px; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--white); border-radius:12px; max-width:620px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+  .modal-head { background:var(--navy); border-radius:12px 12px 0 0; padding:14px 17px; border-bottom:3px solid var(--gold); display:flex; align-items:center; justify-content:space-between; }
+  .modal-head span { color:var(--white); font-family:"Arial Narrow",Arial,sans-serif; font-weight:700; font-size:14px; letter-spacing:0.05em; }
+  .modal-close { background:none; border:none; color:rgba(255,255,255,0.55); font-size:18px; cursor:pointer; padding:2px 6px; }
+  .modal-body { padding:17px; }
+  #toast { position:fixed; bottom:20px; right:18px; background:var(--navy); color:var(--white); padding:11px 16px; border-radius:7px; border-left:3px solid var(--gold); font-size:13px; font-weight:500; box-shadow:0 4px 18px rgba(0,0,0,0.2); transform:translateY(70px); opacity:0; transition:all 0.27s ease; z-index:9999; }
+  #toast.show { transform:translateY(0); opacity:1; }
+  @media print {
+    .page-header { position:static !important; display:flex !important; border-bottom:4px solid #F5B731 !important; margin-bottom:12px; padding:10px 0 !important; }
+    .header-actions { display:none !important; }
+    .submit-panel, #toast, .modal-overlay, .sig-bar .btn-red-sm, #resume-banner, .add-btn, .photo-btn, .thumb .rm { display:none !important; }
+    body { background:white; font-size:11px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .page-header { background:#1a1a1a !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .form-card { box-shadow:none; break-inside:avoid; margin-bottom:12px; }
+    .section-body.hidden { display:block !important; } .section-toggle { display:none !important; }
+    .container { padding:0; max-width:100%; } .sig-canvas { border:1px solid #ccc; } .progress-wrap { display:none; }
+    .check-row, .point-card { break-inside:avoid; }
+  }
+  @media (max-width:580px) {
+    .field-grid.cols-2, .field-grid.cols-3 { grid-template-columns:1fr; }
+    .header-title p { display:none; } .submit-panel { flex-direction:column; }
+    .check-row { flex-direction:column; align-items:flex-start; gap:7px; } .ynna { width:100%; } .ynna-btn { flex:1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-brand">
+    <div class="header-logo"><img src="data:image/png;base64,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" alt="Kahuto Pacific"></div>
+    <div class="header-title">
+      <h1>On-Site (Survey) Checklist</h1>
+      <p>Terrestrial Laser Scanning (TLS) · Step 3</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline" onclick="openDrafts()">📂 Drafts</button>
+    <button class="btn btn-outline" onclick="clearForm()">↺</button>
+    <button class="btn btn-outline" onclick="printOrGuide()">⎙ Print / PDF</button>
+  </div>
+</div>
+
+<div class="container">
+  <div id="proj-carry" style="display:none;align-items:center;gap:11px;background:var(--gold-light);border:1.5px solid var(--gold);border-radius:9px;padding:11px 14px;margin-bottom:13px;">
+    <span style="font-size:18px;flex-shrink:0;">📋</span>
+    <div style="flex:1;font-size:12px;color:#7a5a00;font-weight:600;line-height:1.4;" id="proj-carry-text"></div>
+    <button class="btn btn-gold" onclick="useActiveProject()">Use</button>
+    <button class="btn" style="background:transparent;border:1.5px solid var(--grey-line);color:var(--grey-text);" onclick="newProject()">New project</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Completion</span><span id="progress-pct">0%</span></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="doc-id-bar">
+    <span><span class="badge">KPL-OSC-TLS</span>On-Site (Survey) Checklist — Terrestrial Laser Scanning</span>
+    <span>Uncontrolled when printed</span>
+  </div>
+
+  <!-- §1 PROJECT & PERSONNEL -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">1</div><h2>Project &amp; Personnel</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="field" style="margin-bottom:11px;"><label>Completed By *</label>
+        <select id="completedBy" onchange="staffOther(this,'completedBy-other');updateProgress()">
+          <option value="">— Select person —</option>
+          <option>Kavitesh Prakash</option><option>Solomon Chant</option><option>Jone Nawele</option><option>Gibson Satu</option><option value="Other">Other</option>
+        </select>
+        <input type="text" id="completedBy-other" placeholder="Enter name…" style="display:none;margin-top:6px;" oninput="updateProgress()">
+      </div>
+      <div class="field" style="margin-bottom:11px;"><label>Region / Office</label>
+        <select id="region"><option>Fiji</option><option>Solomon Islands</option></select>
+      </div>
+      <div class="field-grid cols-2">
+        <div class="field"><label>Project No. *</label><input type="text" id="projNo" placeholder="e.g. KP0626" oninput="updateProgress()"></div>
+        <div class="field"><label>Client *</label><input type="text" id="client" placeholder="Client / organisation" oninput="updateProgress()"></div>
+        <div class="field"><label>Site / Location *</label><input type="text" id="site" placeholder="Site name or location" oninput="updateProgress()"></div>
+        <div class="field"><label>Survey Date</label><input type="date" id="surveyDate"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="check-row" data-id="preSurveyGo"><div class="check-label">Pre-Survey (Step 2) approved — GO<span class="hint">Mobilisation authorised before work begins</span></div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-1" placeholder="Conditions on site at start, crew present…"></textarea></div>
+    </div>
+  </div>
+
+  <!-- §2 TOTAL STATION SETUP -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">2</div><h2>Total Station Setup</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="check-row" data-id="setupOnControl"><div class="check-label">Set up &amp; levelled on known control</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="backsightChecked"><div class="check-label">Backsight observed &amp; checked</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="orientationOk"><div class="check-label">Orientation check within tolerance<span class="hint">Check shot to known point agrees</span></div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="divider"></div>
+      <div class="field-grid cols-2">
+        <div class="field"><label>Occupied Control Station</label><input type="text" id="controlStation" placeholder="Station ID"></div>
+        <div class="field"><label>Backsight Station</label><input type="text" id="backsightStation" placeholder="Backsight ID"></div>
+        <div class="field"><label>Instrument Height (m)</label><input type="text" id="instrumentHeight" placeholder="e.g. 1.520 m"></div>
+        <div class="field"><label>Target / Prism Height (m)</label><input type="text" id="targetHeight" placeholder="e.g. 1.500 m"></div>
+      </div>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-2" placeholder="Setup observations, orientation residual, re-levelling…"></textarea></div>
+    </div>
+  </div>
+
+  <!-- §3 CONTROL ESTABLISHMENT -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">3</div><h2>Control Establishment</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="check-row" data-id="controlsEstablished"><div class="check-label">Controls established throughout site<span class="hint">Per the survey plan</span></div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="coordsRecorded"><div class="check-label">Coordinates recorded</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="sufficientControl"><div class="check-label">Sufficient control for registration &amp; deliverable</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="field" style="margin-top:11px;"><label>No. of Control Points Established</label><input type="text" id="controlCount" placeholder="e.g. 6"></div>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-3" placeholder="Control IDs, distribution, any gaps…"></textarea></div>
+    </div>
+  </div>
+
+  <!-- §4 SPHERE / TARGET PLACEMENT -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">4</div><h2>Sphere / Target Placement</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="check-row" data-id="targetsPlaced"><div class="check-label">Spheres / targets placed per plan</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="sharedTargets"><div class="check-label">≥3 shared targets between adjacent scans<span class="hint">Needed for reliable registration</span></div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="targetsSecure"><div class="check-label">Targets fixed / secure — not moved during scanning</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="divider"></div>
+      <div class="sublabel">📍 Target / Sphere Points <span style="font-weight:400;text-transform:none;">— record each with an ID and a photo</span></div>
+      <div id="points-container"></div>
+      <button class="add-btn" onclick="addPoint()">＋ Add Target / Sphere Point</button>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-4" placeholder="Target types used, placement issues…"></textarea></div>
+    </div>
+  </div>
+
+  <!-- §5 TLS SCANNING -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">5</div><h2>TLS Scanning</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="check-row" data-id="resolutionSet"><div class="check-label">Scan resolution / quality set per plan</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="scansComplete"><div class="check-label">All planned scans / setups captured</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="panoCaptured"><div class="check-label">Ricoh 360 pano captured per station<span class="hint">Where imagery / colourisation required</span></div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="divider"></div>
+      <div class="field-grid cols-2">
+        <div class="field"><label>Resolution / Quality Used</label><input type="text" id="scanResUsed" placeholder="e.g. 1/5, 4x"></div>
+        <div class="field"><label>No. of Scans / Setups</label><input type="text" id="scanCount" placeholder="e.g. 27"></div>
+      </div>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-5" placeholder="Resolution rationale, scans skipped/repeated, weather effects…"></textarea></div>
+    </div>
+  </div>
+
+  <!-- §6 TRAVERSE -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">6</div><h2>Traverse</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="check-row" data-id="traverseRun"><div class="check-label">Traverse run with scanner / total station</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="traverseClosed"><div class="check-label">TS traverse closed</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="misclosureOk"><div class="check-label">Misclosure within tolerance<span class="hint">Check before leaving site — a bad traverse can't be fixed in office</span></div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="divider"></div>
+      <div class="field-grid cols-3">
+        <div class="field"><label>Linear Misclosure</label><input type="text" id="misclosureLinear" placeholder="e.g. 1:12000 / 8 mm"></div>
+        <div class="field"><label>Angular Misclosure</label><input type="text" id="misclosureAngular" placeholder="e.g. 12″"></div>
+        <div class="field"><label>Tolerance / Spec</label><input type="text" id="traverseTolerance" placeholder="e.g. 1:10000"></div>
+      </div>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-6" placeholder="Traverse legs, adjustment, re-observations…"></textarea></div>
+    </div>
+  </div>
+
+  <!-- §7 IN-FIELD CHECK -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">7</div><h2>In-Field Check</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="check-row" data-id="scansReviewed"><div class="check-label">Scans reviewed on tablet</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="coverageComplete"><div class="check-label">Coverage complete — no obvious gaps / occlusions</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="targetsVisible"><div class="check-label">Targets visible / identifiable in scans</div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="check-row" data-id="dataBackedUp"><div class="check-label">Raw data backed up on site<span class="hint">Second copy before leaving</span></div><div class="ynna"><button class="ynna-btn yes" onclick="ynnaClick(this,'yes')">Yes</button><button class="ynna-btn no" onclick="ynnaClick(this,'no')">No</button><button class="ynna-btn na" onclick="ynnaClick(this,'na')">N/A</button></div></div>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-7" placeholder="Gaps to revisit, re-scans done, data offload notes…"></textarea></div>
+    </div>
+  </div>
+
+  <!-- §8 SIGN-OFF -->
+  <div class="form-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">8</div><h2>Sign-Off</h2>
+      <div class="status-dot"></div><div class="section-toggle open">▾</div>
+    </div>
+    <div class="section-body">
+      <p style="font-size:11px;color:var(--grey-text);margin-bottom:14px;">Signed off by the instrument operator / surveyor-in-charge. Sign using finger, stylus, or mouse.</p>
+      <div class="field-grid cols-2" style="margin-bottom:8px;">
+        <div class="field"><label>Instrument Operator / Surveyor-in-Charge *</label>
+          <select id="operator" onchange="staffOther(this,'operator-other');syncSigner('operator','operator-other','sigOperatorName');updateProgress()">
+            <option value="">— Select —</option><option>Kavitesh Prakash</option><option>Solomon Chant</option><option>Jone Nawele</option><option>Gibson Satu</option><option value="Other">Other</option>
+          </select>
+          <input type="text" id="operator-other" placeholder="Enter name…" style="display:none;margin-top:6px;" oninput="syncSigner('operator','operator-other','sigOperatorName')">
+        </div>
+        <div class="field"><label>Date Signed</label><input type="date" id="signDate"></div>
+      </div>
+      <input type="hidden" id="sigOperatorName">
+      <div class="sig-wrap" id="sig-wrap-operator">
+        <div class="sig-hint" id="sig-hint-operator">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/></svg>
+          Sign here
+        </div>
+        <canvas class="sig-canvas" id="sig-canvas-operator"
+          onmousedown="sigStart(event,'operator')" onmousemove="sigMove(event,'operator')" onmouseup="sigEnd('operator')" onmouseleave="sigEnd('operator')"
+          ontouchstart="sigStart(event,'operator')" ontouchmove="sigMove(event,'operator')" ontouchend="sigEnd('operator')"></canvas>
+        <div class="sig-bar"><span class="sig-bar-label">Instrument Operator / Surveyor-in-Charge</span>
+          <div style="display:flex;align-items:center;gap:7px;"><div class="sig-status empty" id="sig-status-operator">● Unsigned</div><button class="btn-red-sm" onclick="clearSig('operator')">Clear</button></div>
+        </div>
+      </div>
+      <div class="notes-block"><label>Notes</label><textarea id="notes-8" placeholder="Hand-over notes, outstanding actions for office…"></textarea></div>
+    </div>
+  </div>
+
+  <div class="submit-panel">
+    <div></div>
+    <div class="submit-actions">
+      <button class="btn btn-outline" onclick="printOrGuide()">⎙ Print / PDF</button>
+      <button class="btn btn-gold" onclick="generateSummary()">✉ Summary</button>
+      <button class="btn btn-green" onclick="promptSaveDraft()">💾 Save Draft</button>
+    </div>
+  </div>
+</div>
+
+<div id="resume-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--navy);border-top:3px solid var(--gold);padding:12px 18px;align-items:center;gap:14px;flex-wrap:wrap;">
+  <div style="font-size:22px;flex-shrink:0;">💾</div>
+  <div style="flex:1;"><strong style="color:var(--white);font-size:13px;display:block;" id="resume-title">Unsaved draft found</strong><p style="color:rgba(255,255,255,0.6);font-size:11px;margin-top:2px;" id="resume-meta"></p></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-gold" onclick="loadAutosave()">↩ Resume</button><button class="btn btn-outline" onclick="dismissResume()">Dismiss</button></div>
+</div>
+
+<div class="modal-overlay" id="draftsModal"><div class="modal-box" style="max-width:540px;">
+  <div class="modal-head"><span>📂 SAVED DRAFTS</span><button class="modal-close" onclick="closeModal('draftsModal')">✕</button></div>
+  <div class="modal-body">
+    <div id="drafts-list"></div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--grey-line);">
+      <div style="font-size:11px;font-weight:600;color:var(--grey-text);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Transfer to another device</div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:10px;"><button class="btn btn-navy" style="flex:1;justify-content:center;" onclick="exportJSON();closeModal('draftsModal')">⬇ Export current form as JSON</button></div>
+      <label style="display:flex;align-items:center;gap:10px;padding:14px;border:2px dashed var(--grey-line);border-radius:8px;cursor:pointer;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='var(--gold-light)'" onmouseout="this.style.borderColor='var(--grey-line)';this.style.background='transparent'">
+        <input type="file" accept=".json" onchange="loadFromJSON(event)" style="display:none;"><span style="font-size:24px;">📄</span>
+        <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Load from JSON file</div><div style="font-size:11px;color:var(--grey-text);margin-top:2px;">Restore a previously exported form.</div></div>
+      </label>
+    </div>
+    <div style="background:#fff7ed;border:1.5px solid #f59e0b;border-radius:6px;padding:9px 13px;font-size:12px;color:#92400e;margin-top:12px;display:flex;gap:8px;align-items:flex-start;"><span>⚠️</span><span>Drafts are stored on this device only. Use Export JSON to transfer between devices.</span></div>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="summaryModal"><div class="modal-box">
+  <div class="modal-head"><span>ON-SITE (SURVEY) SUMMARY</span><button class="modal-close" onclick="closeModal('summaryModal')">✕</button></div>
+  <div class="modal-body">
+    <pre id="summaryText" style="font-family:system-ui;font-size:12px;white-space:pre-wrap;color:var(--navy);line-height:1.7;background:var(--grey-bg);border-radius:6px;padding:13px;"></pre>
+    <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap;"><button class="btn btn-gold" onclick="copySummary()">Copy to Clipboard</button><button class="btn btn-outline" style="border-color:var(--navy);color:var(--navy);" onclick="closeModal('summaryModal')">Close</button></div>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="iosPdfModal"><div class="modal-box" style="max-width:480px;">
+  <div class="modal-head"><span>📄 Save as PDF on iPhone</span><button class="modal-close" onclick="closeModal('iosPdfModal')">✕</button></div>
+  <div class="modal-body">
+    <p style="font-size:13px;color:var(--grey-text);margin-bottom:14px;">Safari doesn't print directly. Steps:</p>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:11px;background:var(--grey-bg);border-radius:8px;margin-bottom:9px;"><div style="background:var(--navy);color:var(--gold);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div><div><div style="font-weight:600;font-size:13px;color:var(--navy);">Tap Share <strong>□↑</strong></div></div></div>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:11px;background:var(--grey-bg);border-radius:8px;margin-bottom:9px;"><div style="background:var(--navy);color:var(--gold);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div><div><div style="font-weight:600;font-size:13px;color:var(--navy);">Scroll down → <strong>Print</strong></div></div></div>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:11px;background:var(--grey-bg);border-radius:8px;margin-bottom:14px;"><div style="background:var(--gold);color:var(--navy);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div><div><div style="font-weight:600;font-size:13px;color:var(--navy);">Pinch out → Share → Save to Files</div></div></div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-gold" onclick="expandAllAndClose('iosPdfModal')">Expand All</button><button class="btn btn-outline" style="border-color:var(--navy);color:var(--navy);" onclick="closeModal('iosPdfModal')">Got it</button></div>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="androidPdfModal"><div class="modal-box" style="max-width:480px;">
+  <div class="modal-head"><span>📄 Save as PDF on Android</span><button class="modal-close" onclick="closeModal('androidPdfModal')">✕</button></div>
+  <div class="modal-body">
+    <p style="font-size:13px;color:var(--grey-text);margin-bottom:14px;">Chrome → Save to PDF:</p>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:11px;background:var(--grey-bg);border-radius:8px;margin-bottom:9px;"><div style="background:var(--navy);color:var(--gold);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div><div><div style="font-weight:600;font-size:13px;color:var(--navy);">⋮ menu → Share → Print</div></div></div>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:11px;background:var(--grey-bg);border-radius:8px;margin-bottom:14px;"><div style="background:var(--gold);color:var(--navy);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div><div><div style="font-weight:600;font-size:13px;color:var(--navy);">Select <strong>Save as PDF</strong> → Save</div></div></div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-gold" onclick="expandAllAndClose('androidPdfModal')">Expand All</button><button class="btn btn-outline" style="border-color:var(--navy);color:var(--navy);" onclick="closeModal('androidPdfModal')">Got it</button></div>
+  </div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+const TEXT_FIELDS = ['region','completedBy','completedBy-other','projNo','client','site','surveyDate',
+  'controlStation','backsightStation','instrumentHeight','targetHeight','controlCount',
+  'scanResUsed','scanCount','misclosureLinear','misclosureAngular','traverseTolerance',
+  'operator','operator-other','sigOperatorName','signDate',
+  'notes-1','notes-2','notes-3','notes-4','notes-5','notes-6','notes-7','notes-8'];
+
+function toggleSection(h){ const b=h.nextElementSibling; const t=h.querySelector('.section-toggle'); const hid=b.classList.toggle('hidden'); t.classList.toggle('open',!hid); }
+function ynnaClick(btn){ const row=btn.closest('.check-row'); row.querySelectorAll('.ynna-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateSectionDots(); }
+function updateSectionDots(){ document.querySelectorAll('.form-card').forEach(c=>{ const d=c.querySelector('.status-dot'); if(!d)return; const r=c.querySelectorAll('.check-row'); if(r.length) d.classList.toggle('done',[...r].every(x=>x.querySelector('.ynna-btn.active'))); }); }
+function updateProgress(){
+  const req=['projNo','client','site']; let n=req.filter(id=>(document.getElementById(id)||{}).value?.trim()).length; let total=req.length+2;
+  ['completedBy','operator'].forEach(id=>{ const s=document.getElementById(id); if(s&&s.value&&s.value!=='Other')n++; else if(s&&s.value==='Other'&&document.getElementById(id+'-other')?.value?.trim())n++; });
+  const p=Math.round(n/total*100); document.getElementById('progress-fill').style.width=p+'%'; document.getElementById('progress-pct').textContent=p+'%'; updateSectionDots();
+}
+
+// ── repeatable target / sphere points ────────────────────────────────
+let pointSeq=0;
+function addPoint(data){
+  pointSeq++; const idx=pointSeq;
+  const c=document.getElementById('points-container');
+  const card=document.createElement('div'); card.className='point-card'; card.setAttribute('data-pt',idx);
+  card.innerHTML=`
+    <div class="point-head"><span class="pt-title">Point ${idx}</span><button class="btn-red-sm" onclick="removePoint(${idx})">Remove</button></div>
+    <div class="field-grid cols-2">
+      <div class="field"><label>ID / Label</label><input type="text" class="pt-id" placeholder="e.g. T1 / SPH-03"></div>
+      <div class="field"><label>Type</label><select class="pt-type"><option value="">—</option><option>Sphere</option><option>Checkerboard target</option><option>Paper target</option><option>Other</option></select></div>
+    </div>
+    <div class="point-photo">
+      <label class="photo-btn">📷 Add photo<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="handlePhoto(event,${idx})"></label>
+      <div class="thumb" id="thumb-${idx}" style="display:none;"><img id="img-${idx}" alt="point photo"><button class="rm" onclick="removePhoto(${idx})">✕</button></div>
+    </div>
+    <div class="field" style="margin-top:9px;"><label>Note</label><input type="text" class="pt-note" placeholder="Location / remarks (optional)"></div>`;
+  c.appendChild(card);
+  if(data){ card.querySelector('.pt-id').value=data.id||''; card.querySelector('.pt-type').value=data.type||''; card.querySelector('.pt-note').value=data.note||''; if(data.photo){ const img=document.getElementById('img-'+idx); img.src=data.photo; document.getElementById('thumb-'+idx).style.display='inline-block'; } }
+  scheduleAutoSave();
+}
+function removePoint(idx){ const card=document.querySelector('.point-card[data-pt="'+idx+'"]'); if(card)card.remove(); scheduleAutoSave(); }
+function handlePhoto(e,idx){ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=ev=>{ const img=document.getElementById('img-'+idx); img.src=ev.target.result; document.getElementById('thumb-'+idx).style.display='inline-block'; scheduleAutoSave(); }; r.readAsDataURL(f); }
+function removePhoto(idx){ const img=document.getElementById('img-'+idx); img.src=''; document.getElementById('thumb-'+idx).style.display='none'; scheduleAutoSave(); }
+function collectPoints(){ return [...document.querySelectorAll('.point-card')].map(card=>({ id:card.querySelector('.pt-id').value, type:card.querySelector('.pt-type').value, note:card.querySelector('.pt-note').value, photo:(card.querySelector('.thumb img').src||'').startsWith('data:')?card.querySelector('.thumb img').src:'' })); }
+
+// ── signature ─────────────────────────────────────────────────────────
+const S={};
+function initSig(id){ const c=document.getElementById('sig-canvas-'+id); const dpr=window.devicePixelRatio||1; const w=c.offsetWidth||800,h=c.offsetHeight||120; c.width=w*dpr;c.height=h*dpr; const x=c.getContext('2d'); x.scale(dpr,dpr); x.strokeStyle='#1a1a1a';x.lineWidth=2;x.lineCap='round';x.lineJoin='round'; S[id]={drawing:false,has:false,ctx:x,dpr}; }
+function getXY(e,c){ const r=c.getBoundingClientRect(); if(e.touches){e.preventDefault();return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};} return{x:e.clientX-r.left,y:e.clientY-r.top}; }
+function sigStart(e,id){ const c=document.getElementById('sig-canvas-'+id);const s=S[id];if(!s)return;const p=getXY(e,c);s.drawing=true;s.ctx.beginPath();s.ctx.moveTo(p.x,p.y);document.getElementById('sig-wrap-'+id).classList.add('active'); }
+function sigMove(e,id){ const s=S[id];if(!s||!s.drawing)return;const c=document.getElementById('sig-canvas-'+id);const p=getXY(e,c);s.ctx.lineTo(p.x,p.y);s.ctx.stroke();s.has=true;document.getElementById('sig-hint-'+id).style.opacity='0';setSigStatus(id,true); }
+function sigEnd(id){ if(S[id])S[id].drawing=false; document.getElementById('sig-wrap-'+id).classList.remove('active'); }
+function clearSig(id){ const c=document.getElementById('sig-canvas-'+id);const s=S[id];if(!s)return;s.ctx.clearRect(0,0,c.width/s.dpr,c.height/s.dpr);s.has=false;document.getElementById('sig-hint-'+id).style.opacity='1';setSigStatus(id,false); }
+function setSigStatus(id,sg){ const e=document.getElementById('sig-status-'+id); e.className='sig-status '+(sg?'signed':'empty'); e.textContent=sg?'● Signed':'● Unsigned'; }
+function getSigData(id){ const s=S[id];if(!s||!s.has)return null;return document.getElementById('sig-canvas-'+id).toDataURL('image/png'); }
+function restoreSig(id,u){ if(!u||!S[id])return; const img=new Image(); img.onload=()=>{const s=S[id];const c=document.getElementById('sig-canvas-'+id);s.ctx.clearRect(0,0,c.width/s.dpr,c.height/s.dpr);s.ctx.drawImage(img,0,0,c.width/s.dpr,c.height/s.dpr);s.has=true;document.getElementById('sig-hint-'+id).style.opacity='0';setSigStatus(id,true);}; img.src=u; }
+function staffOther(sel,t){ const i=document.getElementById(t);if(!i)return;const sh=sel.value==='Other';i.style.display=sh?'block':'none';i.style.cssText+=';font-family:system-ui;font-size:14px;padding:8px 11px;border:1.5px solid var(--grey-line);border-radius:6px;width:100%;';if(!sh)i.value='';if(sh)i.focus(); }
+function syncSigner(selId,otherId,nameId){ const s=document.getElementById(selId),o=document.getElementById(otherId),n=document.getElementById(nameId);if(!s||!n)return;n.value=s.value==='Other'?(o?.value||''):s.value; }
+function restoreSelect(id,v){ const s=document.getElementById(id),i=document.getElementById(id+'-other');if(!s||v===undefined||v==='')return;const ex=[...s.options].some(o=>o.value===v);if(ex){s.value=v;}else{s.value='Other';if(i){i.value=v;i.style.cssText='display:block;margin-top:6px;font-family:system-ui;font-size:14px;padding:8px 11px;border:1.5px solid var(--grey-line);border-radius:6px;width:100%;';}} }
+
+window.addEventListener('DOMContentLoaded',()=>{ const t=new Date().toISOString().split('T')[0]; document.getElementById('surveyDate').value=t; document.getElementById('signDate').value=t; initSig('operator'); updateProgress(); setTimeout(checkForResume,600); setTimeout(checkActiveProject,650); const c=document.querySelector('.container'); c.addEventListener('input',scheduleAutoSave); c.addEventListener('change',scheduleAutoSave); c.addEventListener('click',e=>{ if(e.target.closest('.ynna-btn'))scheduleAutoSave(); }); });
+
+function collect(){
+  const d={}; TEXT_FIELDS.forEach(id=>{const e=document.getElementById(id);d[id]=e?e.value:'';});
+  ['completedBy','operator'].forEach(id=>{ if(d[id]==='Other')d[id]=document.getElementById(id+'-other')?.value?.trim()||'Other'; });
+  d.checks={}; document.querySelectorAll('.check-row').forEach(r=>{const a=r.querySelector('.ynna-btn.active');d.checks[r.getAttribute('data-id')]=a?(a.classList.contains('yes')?'Yes':a.classList.contains('no')?'No':'N/A'):'';});
+  d.points=collectPoints(); d.signature=getSigData('operator'); d._savedAt=new Date().toISOString(); return d;
+}
+function exportJSON(){ const d=collect(); const pr=(d.projNo||'osc').replace(/[^a-z0-9]/gi,'_').toLowerCase(); const dt=(d.surveyDate||'date').replace(/-/g,''); const f=`KPL_OSC_TLS_${pr}_${dt}.json`; const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'}); const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=f;a.click(); showToast('✓ JSON saved: '+f); }
+function generateSummary(){
+  const d=collect(),ck=d.checks; const yes=Object.values(ck).filter(v=>v==='Yes').length,no=Object.values(ck).filter(v=>v==='No').length,na=Object.values(ck).filter(v=>v==='N/A').length,bl=Object.values(ck).filter(v=>!v).length;
+  const lines=['══════════════════════════════════════════','  KAHUTO PACIFIC LIMITED','  On-Site (Survey) Checklist — TLS','══════════════════════════════════════════',
+    '── PROJECT ──────────────────────────────','Completed By: '+(d.completedBy||'—'),'Region:      '+(d.region||'—'),'Project No:  '+(d.projNo||'—'),'Client:      '+(d.client||'—'),'Site:        '+(d.site||'—'),'Date:        '+(d.surveyDate||'—'),
+    '── TS SETUP ─────────────────────────────','Occupied:    '+(d.controlStation||'—')+'   Backsight: '+(d.backsightStation||'—'),'Inst. ht:    '+(d.instrumentHeight||'—')+'   Target ht: '+(d.targetHeight||'—'),
+    '── SCANNING ─────────────────────────────','Resolution:  '+(d.scanResUsed||'—'),'Scans:       '+(d.scanCount||'—'),'Targets:     '+d.points.length+' recorded ('+d.points.filter(p=>p.photo).length+' w/ photo)',
+    '── TRAVERSE ─────────────────────────────','Linear misc: '+(d.misclosureLinear||'—'),'Angular misc:'+(d.misclosureAngular||'—'),'Tolerance:   '+(d.traverseTolerance||'—'),
+    '── CHECKLIST RESULT ─────────────────────','Yes: '+yes+'   No: '+no+'   N/A: '+na+'   Unanswered: '+bl,(no>0?'⚠ '+no+' item(s) marked NO — review':''),
+    '── SIGN-OFF ─────────────────────────────','Operator:    '+(d.operator||'—')+(S.operator?.has?' (✓ signed)':' (unsigned)'),'Date Signed: '+(d.signDate||'—'),
+    '','Generated:   '+new Date().toLocaleString(),'══════════════════════════════════════════'].filter(l=>l!=='');
+  document.getElementById('summaryText').textContent=lines.join('\n'); document.getElementById('summaryModal').classList.add('open');
+}
+function copySummary(){ navigator.clipboard.writeText(document.getElementById('summaryText').textContent).then(()=>showToast('✓ Copied')); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); }
+function isAndroid(){ return /Android/.test(navigator.userAgent); }
+function expandAllSections(){ document.querySelectorAll('.section-body.hidden').forEach(b=>{b.classList.remove('hidden');const t=b.previousElementSibling?.querySelector('.section-toggle');if(t)t.classList.add('open');}); }
+function expandAllAndClose(m){ expandAllSections(); closeModal(m); showToast('All sections expanded'); }
+function printOrGuide(){ expandAllSections(); if(isIOS())document.getElementById('iosPdfModal').classList.add('open'); else if(isAndroid())document.getElementById('androidPdfModal').classList.add('open'); else setTimeout(()=>window.print(),150); }
+const AUTOSAVE_KEY='kpl_osc_tls_autosave',DRAFTS_KEY='kpl_osc_tls_drafts'; let autoSaveTimer=null;
+function scheduleAutoSave(){ clearTimeout(autoSaveTimer); autoSaveTimer=setTimeout(()=>{try{localStorage.setItem(AUTOSAVE_KEY,JSON.stringify(collect()));saveActiveProject();}catch(e){}},2000); }
+function checkForResume(){ try{const raw=localStorage.getItem(AUTOSAVE_KEY);if(!raw)return;const d=JSON.parse(raw);const w=d._savedAt?new Date(d._savedAt).toLocaleString():'';document.getElementById('resume-title').textContent='Resume: '+(d.projNo||'Untitled')+' — '+(d.site||'');document.getElementById('resume-meta').textContent='Last auto-saved '+w;document.getElementById('resume-banner').style.display='flex';}catch(e){} }
+function loadAutosave(){ try{const raw=localStorage.getItem(AUTOSAVE_KEY);if(!raw)return;restoreForm(JSON.parse(raw));dismissResume();showToast('↩ Draft resumed');}catch(e){showToast('Could not load draft');} }
+function dismissResume(){ document.getElementById('resume-banner').style.display='none'; }
+function getDrafts(){ try{return JSON.parse(localStorage.getItem(DRAFTS_KEY)||'[]');}catch(e){return[];} }
+function saveDrafts(d){ try{localStorage.setItem(DRAFTS_KEY,JSON.stringify(d));}catch(e){showToast('Storage full');} }
+function promptSaveDraft(){ const d=collect();const def=(d.projNo||'Untitled')+' — '+(d.site||d.surveyDate||new Date().toISOString().split('T')[0]);const name=prompt('Save draft as:',def);if(!name)return;const drafts=getDrafts();const ex=drafts.findIndex(x=>x.name===name);const en={name,data:JSON.stringify(d),savedAt:new Date().toISOString()};if(ex>=0)drafts[ex]=en;else drafts.unshift(en);saveDrafts(drafts);try{localStorage.setItem(AUTOSAVE_KEY,en.data);}catch(e){}showToast('💾 Draft saved: '+name); }
+function openDrafts(){ renderDraftsList(); document.getElementById('draftsModal').classList.add('open'); }
+function renderDraftsList(){ const drafts=getDrafts();const c=document.getElementById('drafts-list');let a='';try{const raw=localStorage.getItem(AUTOSAVE_KEY);if(raw){const d=JSON.parse(raw);const w=d._savedAt?new Date(d._savedAt).toLocaleString():'';a=`<div style="display:flex;align-items:center;gap:10px;padding:11px 13px;border:1.5px solid var(--gold);border-radius:8px;background:rgba(245,183,49,0.06);margin-bottom:10px;"><div style="flex:1;"><div style="font-weight:600;font-size:13px;color:var(--navy);">⚡ Auto-saved: ${d.projNo||'Untitled'}</div><div style="font-size:11px;color:var(--grey-text);margin-top:2px;">${w}</div></div><button class="btn btn-gold" style="font-size:11px;padding:5px 10px;" onclick="loadAutosave();closeModal('draftsModal')">↩ Resume</button></div>`;}}catch(e){}
+  if(!drafts.length&&!a){c.innerHTML=a+'<div style="text-align:center;padding:24px;color:var(--grey-text);font-size:13px;">No saved drafts yet.</div>';return;}
+  const items=drafts.map((dr,i)=>{const w=new Date(dr.savedAt).toLocaleString();return `<div style="display:flex;align-items:center;gap:10px;padding:11px 13px;border:1.5px solid var(--grey-line);border-radius:8px;margin-bottom:8px;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${dr.name}</div><div style="font-size:11px;color:var(--grey-text);margin-top:2px;">${w}</div></div><button class="btn btn-gold" style="font-size:11px;padding:5px 10px;flex-shrink:0;" onclick="resumeDraft(${i})">↩ Load</button><button class="btn-red-sm" style="flex-shrink:0;" onclick="deleteDraft(${i})">✕</button></div>`;}).join('');
+  c.innerHTML=a+items;
+}
+function resumeDraft(i){ const d=getDrafts();if(!d[i])return;try{restoreForm(JSON.parse(d[i].data));closeModal('draftsModal');dismissResume();showToast('↩ Loaded: '+d[i].name);}catch(e){showToast('Could not load draft');} }
+function deleteDraft(i){ const d=getDrafts();if(!confirm('Delete draft "'+d[i]?.name+'"?'))return;d.splice(i,1);saveDrafts(d);renderDraftsList();showToast('Draft deleted'); }
+function loadFromJSON(e){ const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{restoreForm(JSON.parse(ev.target.result));closeModal('draftsModal');dismissResume();showToast('✓ Loaded from JSON');}catch(err){showToast('Invalid JSON file');}};r.readAsText(f);e.target.value=''; }
+function restoreForm(d){
+  TEXT_FIELDS.forEach(id=>{const e=document.getElementById(id);if(e&&d[id]!==undefined&&e.tagName!=='SELECT')e.value=d[id];});
+  if(d.region){const r=document.getElementById('region');if(r)r.value=d.region;}
+  restoreSelect('completedBy',d.completedBy); restoreSelect('operator',d.operator); syncSigner('operator','operator-other','sigOperatorName');
+  document.getElementById('points-container').innerHTML=''; pointSeq=0; if(Array.isArray(d.points))d.points.forEach(p=>addPoint(p));
+  if(d.checks){document.querySelectorAll('.check-row').forEach(r=>{const v=d.checks[r.getAttribute('data-id')];r.querySelectorAll('.ynna-btn').forEach(b=>b.classList.remove('active'));if(v==='Yes')r.querySelector('.ynna-btn.yes')?.classList.add('active');else if(v==='No')r.querySelector('.ynna-btn.no')?.classList.add('active');else if(v==='N/A')r.querySelector('.ynna-btn.na')?.classList.add('active');});}
+  if(d.signature)restoreSig('operator',d.signature);
+  updateProgress(); showToast('↩ Form restored');
+}
+function clearForm(){
+  if(!confirm('Reset all form data?'))return;
+  document.querySelectorAll('input[type=text],input[type=date],input[type=hidden],select,textarea').forEach(e=>{e.tagName==='SELECT'?e.selectedIndex=0:e.value='';});
+  document.querySelectorAll('.ynna-btn').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.status-dot').forEach(e=>e.classList.remove('done'));
+  document.getElementById('points-container').innerHTML=''; pointSeq=0;
+  clearSig('operator');
+  ['completedBy-other','operator-other'].forEach(id=>{const e=document.getElementById(id);if(e){e.value='';e.style.display='none';}});
+  const t=new Date().toISOString().split('T')[0]; document.getElementById('surveyDate').value=t; document.getElementById('signDate').value=t;
+  try{localStorage.removeItem(AUTOSAVE_KEY);}catch(e){} dismissResume(); updateProgress(); showToast('Form reset');
+}
+// ── active project carry (service-wide: TLS) ──
+const ACTIVE_KEY='kpl_active_project_tls';
+function saveActiveProject(){
+  const p=document.getElementById('projNo')?.value?.trim(); if(!p)return;
+  const obj={projNo:p,client:document.getElementById('client')?.value||'',site:document.getElementById('site')?.value||'',region:document.getElementById('region')?.value||'',_at:new Date().toISOString()};
+  try{localStorage.setItem(ACTIVE_KEY,JSON.stringify(obj));}catch(e){}
+}
+function checkActiveProject(){
+  const cur=document.getElementById('projNo')?.value?.trim(); if(cur)return;
+  try{const raw=localStorage.getItem(ACTIVE_KEY); if(!raw)return; const d=JSON.parse(raw); if(!d.projNo)return;
+    const b=document.getElementById('proj-carry'); if(!b)return;
+    document.getElementById('proj-carry-text').textContent='Continue project '+d.projNo+(d.client?' — '+d.client:'')+(d.site?' — '+d.site:'')+'?';
+    b.style.display='flex';
+  }catch(e){}
+}
+function useActiveProject(){
+  try{const d=JSON.parse(localStorage.getItem(ACTIVE_KEY)); if(!d)return;
+    if(d.projNo)document.getElementById('projNo').value=d.projNo;
+    if(d.client)document.getElementById('client').value=d.client;
+    if(d.site)document.getElementById('site').value=d.site;
+    const r=document.getElementById('region'); if(r&&d.region){r.value=d.region; if(typeof setRegion==='function')setRegion(false);}
+    dismissCarry(); updateProgress(); showToast('↩ Project details filled');
+  }catch(e){}
+}
+function dismissCarry(){ const b=document.getElementById('proj-carry'); if(b)b.style.display='none'; }
+function newProject(){ try{localStorage.removeItem(ACTIVE_KEY);}catch(e){} dismissCarry(); showToast('Started a new project — enter the details'); }
+
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200); }
+</script>
+</body>
+</html>
